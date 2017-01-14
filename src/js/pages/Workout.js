@@ -7,6 +7,7 @@ import schema from "../../../sample_schema.json";
 import TrainingStore from "../stores/TrainingStore";
 import Input from "../components/Form/Input";
 import PanelListCollection from "../components/PanelList/PanelListCollection";
+import SetForm from "../components/Form/SetForm";
 
 export default class Workout extends React.Component {
     constructor() {
@@ -26,8 +27,7 @@ export default class Workout extends React.Component {
         {
             return {
                 header: x.movement.name,
-                listItems: x.sets.map(y => `${y.repetitions} x ${y.weight.magnitude} ${y.weight.unit}`),
-                tableRows: x.sets.map(y => [y.repetitions, `${y.weight.magnitude} ${y.weight.unit}`])
+                listItems: x.sets.map(y => <SetForm reps={y.repetitions} weight={y.weight} />)
             }
         });
 
@@ -42,7 +42,7 @@ export default class Workout extends React.Component {
                     </Col>
                     </Row>
                 </Grid>
-                <PanelListCollection panelLists={panelLists} />
+                <PanelListCollection lg={4} panelLists={panelLists} />
             </div>
         );
     }

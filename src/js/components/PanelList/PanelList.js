@@ -4,24 +4,21 @@ import FitTable from "../Table/FitTable";
 
 export default class PanelList extends React.Component {
     render() {
-        const {sm, md, lg} = this.props.colSizes;
+        const {xs, sm, md, lg} = this.props.colSizes;
         const listItems = this.props.listItems;
-        const header = (<div>{this.props.header}<Button bsClass="btn-link pull-right" bsSize="xsmall"><span class="glyphicon glyphicon-remove"></span></Button></div>)
-
-        const tableHeader = ["Reps", "Weight"]
-        const tableRows = this.props.tableRows;
-
+        const exitButton = (<Button bsClass="btn-link pull-right" bsSize="xsmall"><span class="glyphicon glyphicon-remove"></span></Button>);
+        const addNewButton = (<Button bsClass="btn-link pull-right" bsSize="xsmall">Add Set</Button>);
+        const header = (<div>{this.props.header}{exitButton}</div>);
+        
         return (
-            <Col lg={lg} md={md} sm={sm}>
+            <Col lg={lg} md={md} sm={sm} xs={xs}>
                 <Panel header={header}>
-                
                 <ListGroup>
-                { listItems.map((y,j) => <ListGroupItem key={j}>{y}</ListGroupItem>) }
+                    { listItems.map((y,j) => <ListGroupItem key={j}>{y}</ListGroupItem>) }
                 </ListGroup>
+                {addNewButton}
                 </Panel>
             </Col>
         );
     }
 }
-
-//<FitTable header={tableHeader} rows={tableRows}/>

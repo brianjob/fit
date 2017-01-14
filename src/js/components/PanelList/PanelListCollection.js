@@ -5,10 +5,11 @@ import PanelList from "./PanelList";
 export default class PanelListCollection extends React.Component {
 
     render() {
-        const lg = this.props.colSizeLg || 3;
-        const md = this.props.colSizeMd || 6;
-        const sm = this.props.colSizeSm || 1;
-        const colSizes = {sm, md, lg};
+        const lg = this.props.lg || 3;
+        const md = this.props.md || 4;
+        const sm = this.props.sm || 6;
+        const xs = this.props.xs || 12;
+        const colSizes = {xs, sm, md, lg};
 
         const panels = this.props.panelLists.map((x,i) => <PanelList key={i} colSizes={colSizes} header={x.header} listItems={x.listItems} tableRows={x.tableRows}/>);
 
