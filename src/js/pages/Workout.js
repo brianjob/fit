@@ -16,17 +16,17 @@ export default class Workout extends React.Component {
             });
         };
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        if (props.params.id) {
+            this.state = {
+                workout: TrainingStore.getWorkout(props.params.id)
+            }
+        }
     }
 
     componentWillMount() {
-        if (this.props.params.id) {
-            this.state = {
-                workout: TrainingStore.getWorkout(this.props.params.id)
-            }
-        }
-
         TrainingStore.on('change', this._onChange);
     }
 
@@ -39,6 +39,12 @@ export default class Workout extends React.Component {
             workoutId: this.state.workout.id,
             movement
         });
+    }
+
+    removeSet({movement, setIndex}) {
+        TrainingStore.removeSet({workoutId: this.state.workout.id,
+            movement,
+            setIndex});
     }
 
     updateSet({movement, setIndex, set}) {
@@ -61,7 +67,7 @@ export default class Workout extends React.Component {
                             movement: x.movement.name,
                             setIndex: j,
                             set});
-                    }} />);
+                    }} removeSet={() => this.removeSet({movement: x.movement.name, setIndex: j})} />);
                 }),
                 addNew: () => this.addSet(x.movement.name)
             }
@@ -73,7 +79,7 @@ export default class Workout extends React.Component {
                     <Row>
                     <Col lg={3}>
                     <h2>Workout</h2>
-                    <Input data={{id: 'date', type: 'date', placeholder: 'date', defaultValue: this.state.workout.date}} />
+                    <Input data={{id: 'date', type: 'date', placeholder: 'date', value: this.state.workout.date}} />
                     <Button style={ {marginBottom: "15px"} }>New Movement</Button>
                     </Col>
                     </Row>

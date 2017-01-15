@@ -22,14 +22,28 @@ class TrainingStore extends EventEmitter {
                                 "magnitude": 315,
                                 "unit": "lbs"
                             },
-                            "reps": 5
+                            "reps": 1
                         },
                         {
                             "weight": {
                                 "magnitude": 315,
                                 "unit": "lbs"
                             },
-                            "reps": 5
+                            "reps": 2
+                        },
+                        {
+                            "weight": {
+                                "magnitude": 315,
+                                "unit": "lbs"
+                            },
+                            "reps": 3
+                        },
+                        {
+                            "weight": {
+                                "magnitude": 315,
+                                "unit": "lbs"
+                            },
+                            "reps": 4
                         }
                     ]
                 },
@@ -135,15 +149,18 @@ class TrainingStore extends EventEmitter {
     }
 
     getWorkout(id) {
-        return this.workouts.find(x => x.id === id);
+        var workout = this.workouts.find(x => x.id === id);
+        return workout;
     }
 
     getExercise({workoutId, movement}) {
-        return this.getWorkout(workoutId).exercises.find(x => x.movement.name === movement);
+        var exercise = this.getWorkout(workoutId).exercises.find(x => x.movement.name === movement);
+        return exercise;
     }
 
     getSet({workoutId, movement, setIndex}) {
-        return this.getExercise({workoutId, movement})[setIndex];
+        var set = this.getExercise({workoutId, movement}).sets[setIndex];
+        return set;
     }
 
     createWorkout(workout) {
@@ -167,9 +184,16 @@ class TrainingStore extends EventEmitter {
         }
     }
 
+    removeSet({workoutId, movement, setIndex}) {
+        var exercise = this.getExercise({workoutId, movement});
+        exercise.sets.splice(setIndex, 1);
+        this.emit('change');
+    }
+
     updateSet({workoutId, movement, setIndex, set}) {
-        var s = this.getSet({workoutId, movement, setIndex});
-        s = set;
+        var exercise = this.getExercise({workoutId, movement});
+        exercise.sets.splice(setIndex, 1, set);
+        this.emit('change');
     }
 
     handleActions(action) {
@@ -189,4 +213,5 @@ const trainingStore = new TrainingStore();
 
 dispatcher.register(trainingStore.handleActions.bind(trainingStore));
 window.dispatcher = dispatcher;
+window.removeSet = (i) => trainingStore.removeSet({workoutId: '8d2b699a-d96f-470a-b56b-a9790fa0617b', movement: "low bar back squat", setIndex: i});
 export default trainingStore;
