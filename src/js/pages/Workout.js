@@ -10,6 +10,12 @@ import PanelListCollection from "../components/PanelList/PanelListCollection";
 import SetForm from "../components/Form/SetForm";
 
 export default class Workout extends React.Component {
+    _onChange = () => {
+            this.setState({
+                workout: TrainingStore.getWorkout(this.props.params.id)
+            });
+        };
+
     constructor() {
         super();
     }
@@ -20,6 +26,28 @@ export default class Workout extends React.Component {
                 workout: TrainingStore.getWorkout(this.props.params.id)
             }
         }
+
+        TrainingStore.on('change', this._onChange);
+    }
+
+    componentWillUnmount() {
+        TrainingStore.removeListener('change', this._onChange);
+    }
+
+    addSet(movement) {
+        TrainingStore.addSet({
+            workoutId: this.state.workout.id,
+            movement
+        });
+    }
+
+    updateSet({movement, setIndex, set}) {
+        TrainingStore.updateSet({
+            workoutId: this.state.workout.id,
+            movement,
+            setIndex,
+            set
+        });
     }
 
     render() {
@@ -27,7 +55,15 @@ export default class Workout extends React.Component {
         {
             return {
                 header: x.movement.name,
-                listItems: x.sets.map(y => <SetForm reps={y.repetitions} weight={y.weight} />)
+                listItems: x.sets.map((y,j) => {
+                    return (<SetForm workoutId={this.state.workout.id} set={y} updateSet={(set) => {
+                        this.updateSet({
+                            movement: x.movement.name,
+                            setIndex: j,
+                            set});
+                    }} />);
+                }),
+                addNew: () => this.addSet(x.movement.name)
             }
         });
 

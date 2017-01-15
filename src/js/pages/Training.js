@@ -5,6 +5,12 @@ import FitTable from "../components/Table/FitTable";
 import TrainingStore from "../stores/TrainingStore";
 
 export default class Training extends React.Component {
+    _onChange = () => {
+            this.setState({
+                workouts: TrainingStore.getWorkouts()
+            })
+    };
+
     constructor() {
         super();
 
@@ -14,11 +20,11 @@ export default class Training extends React.Component {
     }
 
     componentWillMount() {
-        TrainingStore.on("change", () => {
-            this.setState({
-                workouts: TrainingStore.getWorkouts()
-            });
-        });
+        TrainingStore.on("change", _onChange);
+    }
+
+    componentWillUnmount() {
+        TrainingStore.removeListener("change", _onChange);
     }
 
     render() {

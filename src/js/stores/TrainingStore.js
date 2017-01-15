@@ -1,7 +1,9 @@
 import {EventEmitter} from "events";
+import dispatcher from "../dispatcher";
 
 class TrainingStore extends EventEmitter {
     constructor() {
+        console.log('constructor');
         super();
 
         this.workouts = [
@@ -20,36 +22,15 @@ class TrainingStore extends EventEmitter {
                                 "magnitude": 315,
                                 "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 315,
                                 "unit": "lbs"
                             },
-                            "repetitions": 5
-                        },
-                        {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
-                            "repetitions": 5
-                        },
-                                                {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
-                            "repetitions": 5
-                        },
-                                                {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
-                            "repetitions": 5
-                        },
+                            "reps": 5
+                        }
                     ]
                 },
                 {
@@ -61,23 +42,23 @@ class TrainingStore extends EventEmitter {
                         {
                             "weight": {
                                 "magnitude": 135,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 135,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 135,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         }
                     ]
                 }
@@ -96,23 +77,23 @@ class TrainingStore extends EventEmitter {
                         {
                             "weight": {
                                 "magnitude": 320,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 320,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 320,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         }
                     ]
                 },
@@ -125,23 +106,23 @@ class TrainingStore extends EventEmitter {
                         {
                             "weight": {
                                 "magnitude": 120,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 120,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         },
                         {
                             "weight": {
                                 "magnitude": 120,
-                                "unit": "pounds"
+                                "unit": "lbs"
                             },
-                            "repetitions": 5
+                            "reps": 5
                         }
                     ]
                 }
@@ -157,12 +138,55 @@ class TrainingStore extends EventEmitter {
         return this.workouts.find(x => x.id === id);
     }
 
+    getExercise({workoutId, movement}) {
+        return this.getWorkout(workoutId).exercises.find(x => x.movement.name === movement);
+    }
+
+    getSet({workoutId, movement, setIndex}) {
+        return this.getExercise({workoutId, movement})[setIndex];
+    }
+
     createWorkout(workout) {
         this.workouts.push(workout);
         this.emit('change');
+    }
+
+    addSet({workoutId, movement}) {
+        var exercise = this.getExercise({workoutId, movement});
+
+        if (exercise) {
+            exercise.sets.push({
+                reps: 0,
+                weight: {
+                    magnitude: 0,
+                    unit: 'lbs'
+                }
+            });
+
+            this.emit('change');
+        }
+    }
+
+    updateSet({workoutId, movement, setIndex, set}) {
+        var s = this.getSet({workoutId, movement, setIndex});
+        s = set;
+    }
+
+    handleActions(action) {
+        console.log('received action: ', action);
+
+        switch(action.type) {
+            case ('ADD_SET'):
+                this.addSet({workoutId: action.workoutId, movement: action.movement});
+                break;
+            default:
+                break;
+        }
     }
 }
 
 const trainingStore = new TrainingStore();
 
+dispatcher.register(trainingStore.handleActions.bind(trainingStore));
+window.dispatcher = dispatcher;
 export default trainingStore;
