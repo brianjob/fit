@@ -36,8 +36,11 @@ export default class Workout extends React.Component {
         TrainingStore.removeListener('change', this._onChange);
     }
 
-    removeMovement() {
-        
+    removeExercise(exerciseIndex) {
+        TrainingActions.removeExercise(
+            this.state.workout.id,
+            exerciseIndex
+        );
     }
 
     addSet(movement) {
@@ -65,7 +68,7 @@ export default class Workout extends React.Component {
     }
 
     render() {
-        const panelLists = this.state.workout.exercises.map((x) =>
+        const panelLists = this.state.workout.exercises.map((x,i) =>
         {
             const options = ["low bar back squat", "high bar back squat", "bench press", "overhead press", "deadlift", "power clean"];
             const header = (<div><Typeahead selected={[x.movement.name]} allowNew={false} options={options} /></div>);
@@ -79,7 +82,8 @@ export default class Workout extends React.Component {
                             set});
                     }} removeSet={() => this.removeSet({movement: x.movement.name, setIndex: j})} />);
                 }),
-                addNew: () => this.addSet(x.movement.name)
+                addNew: () => this.addSet(x.movement.name),
+                removePanel: () => this.removeExercise(i)
             }
         });
 
@@ -90,7 +94,7 @@ export default class Workout extends React.Component {
                     <Col lg={3}>
                     <h2>Workout</h2>
                     <Input data={{id: 'date', type: 'date', placeholder: 'date', value: this.state.workout.date}} />
-                    <Button style={ {marginBottom: "15px"} }>New Movement</Button>
+                    <Button style={{marginBottom: "15px"}}>New Movement</Button>
                     </Col>
                     </Row>
                 </Grid>

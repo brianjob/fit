@@ -26,3 +26,11 @@ export function updateSet(workoutId, movement, setIndex, set) {
         set
     });
 }
+
+export function removeExercise(workoutId, exerciseIndex) {
+    dispatcher.dispatch({
+        type: 'REMOVE_EXERCISE',
+        workoutId,
+        exerciseIndex
+    });
+}

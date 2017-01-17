@@ -196,6 +196,11 @@ class TrainingStore extends EventEmitter {
         this.emit('change');
     }
 
+    removeExercise(workoutId, exerciseIndex) {
+        this.getWorkout(workoutId).exercises.splice(exerciseIndex, 1);
+        this.emit('change');
+    }
+
     handleActions(action) {
         console.log('received action: ', action);
 
@@ -209,7 +214,10 @@ class TrainingStore extends EventEmitter {
             case 'UPDATE_SET':
                 this.updateSet(action.workoutId, action.movement, action.setIndex, action.set);
                 break;
+            case 'REMOVE_EXERCISE':
+                this.removeExercise(action.workoutId, action.exerciseIndex);
             default:
+                throw new Error('Unknown action type');
                 break;
         }
     }

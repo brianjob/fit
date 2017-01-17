@@ -11,7 +11,7 @@ export default class PanelListCollection extends React.Component {
         const xs = this.props.xs || 12;
         const colSizes = {xs, sm, md, lg};
 
-        const panels = this.props.panelLists.map((x,i) => <PanelList addNew={x.addNew} key={i} colSizes={colSizes} header={x.header} listItems={x.listItems} tableRows={x.tableRows}/>);
+        const panels = this.props.panelLists.map((x,i) => <PanelList removePanel={x.removePanel} addNew={x.addNew} key={i} colSizes={colSizes} header={x.header} listItems={x.listItems} tableRows={x.tableRows}/>);
 
         return (
             <Grid>
