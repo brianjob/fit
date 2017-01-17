@@ -14,13 +14,17 @@ module.exports = {
         loader: 'babel-loader',
         query: {
           presets: ['react', 'es2015', 'stage-0'],
-          plugins: ['react-html-attrs', 'transform-decorators-legacy', 'transform-class-properties'],
+          plugins: ['react-html-attrs', 'transform-decorators-legacy', 'transform-class-properties']
         }
       },
       {
         test: /\.json$/,
         exclude: /(node_modules|bower_components)/,
-        loader: 'json-loader',
+        loader: 'json-loader'
+      },
+      {
+        test: /\.scss$/,
+        loader: 'sass-loader'
       }
     ]
   },

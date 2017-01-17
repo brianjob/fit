@@ -1,13 +1,15 @@
 import React from "react";
-import { Grid, Row, Col, Panel, ListGroup, ListGroupItem, Button } from "react-bootstrap";
+import { Grid, Row, Col, Panel, ListGroup, ListGroupItem, Button, FormControl } from "react-bootstrap";
 import DatePicker from "react-bootstrap-date-picker";
 import FitTable from "../components/Table/FitTable";
 import FitForm from "../components/Form/FitForm";
 import schema from "../../../sample_schema.json";
+import * as TrainingActions from "../actions/TrainingActions";
 import TrainingStore from "../stores/TrainingStore";
 import Input from "../components/Form/Input";
 import PanelListCollection from "../components/PanelList/PanelListCollection";
 import SetForm from "../components/Form/SetForm";
+import { Typeahead } from "react-bootstrap-typeahead";
 
 export default class Workout extends React.Component {
     _onChange = () => {
@@ -34,33 +36,41 @@ export default class Workout extends React.Component {
         TrainingStore.removeListener('change', this._onChange);
     }
 
+    removeMovement() {
+        
+    }
+
     addSet(movement) {
-        TrainingStore.addSet({
-            workoutId: this.state.workout.id,
+        TrainingActions.addSet(
+            this.state.workout.id,
             movement
-        });
+        );
     }
 
-    removeSet({movement, setIndex}) {
-        TrainingStore.removeSet({workoutId: this.state.workout.id,
+    removeSet(movement, setIndex) {
+        TrainingActions.removeSet(
+            this.state.workout.id,
             movement,
-            setIndex});
+            setIndex
+        );
     }
 
-    updateSet({movement, setIndex, set}) {
-        TrainingStore.updateSet({
-            workoutId: this.state.workout.id,
+    updateSet(movement, setIndex, set) {
+        TrainingActions.updateSet(
+            this.state.workout.id,
             movement,
             setIndex,
             set
-        });
+        );
     }
 
     render() {
         const panelLists = this.state.workout.exercises.map((x) =>
         {
+            const options = ["low bar back squat", "high bar back squat", "bench press", "overhead press", "deadlift", "power clean"];
+            const header = (<div><Typeahead selected={[x.movement.name]} allowNew={false} options={options} /></div>);
             return {
-                header: x.movement.name,
+                header: header,
                 listItems: x.sets.map((y,j) => {
                     return (<SetForm workoutId={this.state.workout.id} set={y} updateSet={(set) => {
                         this.updateSet({

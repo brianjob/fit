@@ -153,13 +153,13 @@ class TrainingStore extends EventEmitter {
         return workout;
     }
 
-    getExercise({workoutId, movement}) {
+    getExercise(workoutId, movement) {
         var exercise = this.getWorkout(workoutId).exercises.find(x => x.movement.name === movement);
         return exercise;
     }
 
-    getSet({workoutId, movement, setIndex}) {
-        var set = this.getExercise({workoutId, movement}).sets[setIndex];
+    getSet(workoutId, movement, setIndex) {
+        var set = this.getExercise(workoutId, movement).sets[setIndex];
         return set;
     }
 
@@ -168,8 +168,8 @@ class TrainingStore extends EventEmitter {
         this.emit('change');
     }
 
-    addSet({workoutId, movement}) {
-        var exercise = this.getExercise({workoutId, movement});
+    addSet(workoutId, movement) {
+        var exercise = this.getExercise(workoutId, movement);
 
         if (exercise) {
             exercise.sets.push({
@@ -184,14 +184,14 @@ class TrainingStore extends EventEmitter {
         }
     }
 
-    removeSet({workoutId, movement, setIndex}) {
-        var exercise = this.getExercise({workoutId, movement});
+    removeSet(workoutId, movement, setIndex) {
+        var exercise = this.getExercise(workoutId, movement);
         exercise.sets.splice(setIndex, 1);
         this.emit('change');
     }
 
-    updateSet({workoutId, movement, setIndex, set}) {
-        var exercise = this.getExercise({workoutId, movement});
+    updateSet(workoutId, movement, setIndex, set) {
+        var exercise = this.getExercise(workoutId, movement);
         exercise.sets.splice(setIndex, 1, set);
         this.emit('change');
     }
@@ -200,8 +200,14 @@ class TrainingStore extends EventEmitter {
         console.log('received action: ', action);
 
         switch(action.type) {
-            case ('ADD_SET'):
-                this.addSet({workoutId: action.workoutId, movement: action.movement});
+            case 'ADD_SET':
+                this.addSet(action.workoutId, action.movement);
+                break;
+            case 'REMOVE_SET':
+                this.removeSet(action.workoutId, action.movement, action.setIndex);
+                break;
+            case 'UPDATE_SET':
+                this.updateSet(action.workoutId, action.movement, action.setIndex, action.set);
                 break;
             default:
                 break;
@@ -210,8 +216,6 @@ class TrainingStore extends EventEmitter {
 }
 
 const trainingStore = new TrainingStore();
-
 dispatcher.register(trainingStore.handleActions.bind(trainingStore));
-window.dispatcher = dispatcher;
-window.removeSet = (i) => trainingStore.removeSet({workoutId: '8d2b699a-d96f-470a-b56b-a9790fa0617b', movement: "low bar back squat", setIndex: i});
+
 export default trainingStore;
