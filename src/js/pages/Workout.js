@@ -1,25 +1,15 @@
 import React from "react";
-import { Grid, Row, Col, Panel, ListGroup, ListGroupItem, Button, FormControl } from "react-bootstrap";
+import { Grid, Row, Col, Button } from "react-bootstrap";
 import DatePicker from "react-bootstrap-date-picker";
-import FitTable from "../components/Table/FitTable";
-import FitForm from "../components/Form/FitForm";
-import schema from "../../../sample_schema.json";
 import * as TrainingActions from "../actions/TrainingActions";
 import TrainingStore from "../stores/TrainingStore";
-import Input from "../components/Form/Input";
-import PanelListCollection from "../components/PanelList/PanelListCollection";
-import SetForm from "../components/Form/SetForm";
-import { Typeahead } from "react-bootstrap-typeahead";
+import Exercise from "../components/Workout/Exercise";
 
 export default class Workout extends React.Component {
-    _onChange = () => {
-            this.setState({
-                workout: TrainingStore.getWorkout(this.props.params.id)
-            });
-        };
-
     constructor(props) {
         super(props);
+
+        this._movements = TrainingStore.getMovements().map(x => {return {id: x.id, label: x.name}});
 
         if (props.params.id) {
             this.state = {
@@ -27,6 +17,12 @@ export default class Workout extends React.Component {
             }
         }
     }
+
+    _onChange = () => {
+        this.setState({
+            workout: TrainingStore.getWorkout(this.props.params.id)
+        });
+    };
 
     componentWillMount() {
         TrainingStore.on('change', this._onChange);
@@ -36,70 +32,27 @@ export default class Workout extends React.Component {
         TrainingStore.removeListener('change', this._onChange);
     }
 
-    removeExercise(exerciseIndex) {
-        TrainingActions.removeExercise(
-            this.state.workout.id,
-            exerciseIndex
-        );
-    }
-
-    addSet(movement) {
-        TrainingActions.addSet(
-            this.state.workout.id,
-            movement
-        );
-    }
-
-    removeSet(movement, setIndex) {
-        TrainingActions.removeSet(
-            this.state.workout.id,
-            movement,
-            setIndex
-        );
-    }
-
-    updateSet(movement, setIndex, set) {
-        TrainingActions.updateSet(
-            this.state.workout.id,
-            movement,
-            setIndex,
-            set
-        );
+    addExercise() {
+        TrainingActions.addExercise(this.state.workout.id);
     }
 
     render() {
-        const panelLists = this.state.workout.exercises.map((x,i) =>
-        {
-            const options = ["low bar back squat", "high bar back squat", "bench press", "overhead press", "deadlift", "power clean"];
-            const header = (<div><Typeahead selected={[x.movement.name]} allowNew={false} options={options} /></div>);
-            return {
-                header: header,
-                listItems: x.sets.map((y,j) => {
-                    return (<SetForm workoutId={this.state.workout.id} set={y} updateSet={(set) => {
-                        this.updateSet({
-                            movement: x.movement.name,
-                            setIndex: j,
-                            set});
-                    }} removeSet={() => this.removeSet({movement: x.movement.name, setIndex: j})} />);
-                }),
-                addNew: () => this.addSet(x.movement.name),
-                removePanel: () => this.removeExercise(i)
-            }
-        });
-
+        const exercises = this.state.workout.exercises.map((x,i) => (
+            <Exercise workoutId={this.props.params.id} exercise={x} exerciseIndex={i} key={i} />
+        ));
+        
         return (
-            <div>                
-                <Grid>
-                    <Row>
-                    <Col lg={3}>
-                    <h2>Workout</h2>
-                    <Input data={{id: 'date', type: 'date', placeholder: 'date', value: this.state.workout.date}} />
-                    <Button style={{marginBottom: "15px"}}>New Movement</Button>
-                    </Col>
-                    </Row>
-                </Grid>
-                <PanelListCollection lg={4} panelLists={panelLists} />
-            </div>
+            <Grid>
+                <Row>
+                <Col lg={3}>
+                <DatePicker placeholder="date" value={this.state.workout.date} />
+                <Button onClick={this.addExercise.bind(this)} style={{marginBottom: "15px", marginTop: "15px"}}>New Exercise</Button>
+                </Col>
+                </Row>
+                <Row>
+                {exercises}
+                </Row>
+            </Grid>
         );
     }
 }

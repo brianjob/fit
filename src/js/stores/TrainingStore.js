@@ -13,65 +13,53 @@ class TrainingStore extends EventEmitter {
             "exercises": [
                 {
                     "movement": {
-                        "name": "low bar back squat"
+                        "id": 0,
+                        "name": "low bar back squat",
                     },
                     "rest_minutes": 1.5,
                     "sets": [
                         {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
+                            "weight": 315,
+                            "unit": "lbs",
                             "reps": 1
                         },
                         {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
+                            "weight": 315,
+                            "unit": "lbs",
                             "reps": 2
                         },
                         {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
+                            "weight": 315,
+                            "unit": "lbs",
                             "reps": 3
                         },
                         {
-                            "weight": {
-                                "magnitude": 315,
-                                "unit": "lbs"
-                            },
+                            "weight": 315,
+                            "unit": "lbs",
                             "reps": 4
                         }
                     ]
                 },
                 {
                     "movement": {
+                        "id": 2,
                         "name": "bench press"   
                     },
                     "rest_minutes": 1.5,
                     "sets": [
                         {
-                            "weight": {
-                                "magnitude": 135,
-                                "unit": "lbs"
-                            },
+                            "weight": 135,
+                            "unit": "lbs",
                             "reps": 5
                         },
                         {
-                            "weight": {
-                                "magnitude": 135,
-                                "unit": "lbs"
-                            },
+                            "weight": 135,
+                            "unit": "lbs",
                             "reps": 5
                         },
                         {
-                            "weight": {
-                                "magnitude": 135,
-                                "unit": "lbs"
-                            },
+                            "weight": 135,
+                            "unit": "lbs",
                             "reps": 5
                         }
                     ]
@@ -89,24 +77,18 @@ class TrainingStore extends EventEmitter {
                     "rest_minutes": 1.5,
                     "sets": [
                         {
-                            "weight": {
-                                "magnitude": 320,
-                                "unit": "lbs"
-                            },
+                            "weight": 320,
+                            "unit": "lbs",
                             "reps": 5
                         },
                         {
-                            "weight": {
-                                "magnitude": 320,
-                                "unit": "lbs"
-                            },
+                            "weight": 320,
+                            "unit": "lbs",
                             "reps": 5
                         },
                         {
-                            "weight": {
-                                "magnitude": 320,
-                                "unit": "lbs"
-                            },
+                            "weight": 320,
+                            "unit": "lbs",
                             "reps": 5
                         }
                     ]
@@ -118,30 +100,55 @@ class TrainingStore extends EventEmitter {
                     "rest_minutes": 1.5,
                     "sets": [
                         {
-                            "weight": {
-                                "magnitude": 120,
-                                "unit": "lbs"
-                            },
+                            "weight": 120,
+                            "unit": "lbs",
                             "reps": 5
                         },
                         {
-                            "weight": {
-                                "magnitude": 120,
-                                "unit": "lbs"
-                            },
+                            "weight": 120,
+                            "unit": "lbs",
                             "reps": 5
                         },
                         {
-                            "weight": {
-                                "magnitude": 120,
-                                "unit": "lbs"
-                            },
+                            "weight": 120,
+                            "unit": "lbs",
                             "reps": 5
                         }
                     ]
                 }
             ]
         }];
+
+        this.movements = [
+        {
+            id: 0,
+            name: "low bar back squat",
+        },
+        {
+            id: 1,
+            name: "high bar back squat"
+        },
+        {
+            id: 2,
+            name: "bench press"
+        },
+        {
+            id: 3,
+            name: "overhead press"
+        },
+        {
+            id: 4,
+            name: "deadlift"
+        },
+        {
+            id: 5,
+            name: "power clean"
+        }
+    ];
+    }
+
+    getMovements() {
+        return this.movements;
     }
 
     getWorkouts() {
@@ -153,13 +160,13 @@ class TrainingStore extends EventEmitter {
         return workout;
     }
 
-    getExercise(workoutId, movement) {
-        var exercise = this.getWorkout(workoutId).exercises.find(x => x.movement.name === movement);
+    getExercise(workoutId, exerciseIndex) {
+        var exercise = this.getWorkout(workoutId).exercises[exerciseIndex];
         return exercise;
     }
 
-    getSet(workoutId, movement, setIndex) {
-        var set = this.getExercise(workoutId, movement).sets[setIndex];
+    getSet(workoutId, exerciseIndex, setIndex) {
+        var set = this.getExercise(workoutId, exerciseIndex).sets[setIndex];
         return set;
     }
 
@@ -168,31 +175,44 @@ class TrainingStore extends EventEmitter {
         this.emit('change');
     }
 
-    addSet(workoutId, movement) {
-        var exercise = this.getExercise(workoutId, movement);
+    addSet(workoutId, exerciseIndex) {
+        var exercise = this.getExercise(workoutId, exerciseIndex);
 
         if (exercise) {
             exercise.sets.push({
                 reps: 0,
-                weight: {
-                    magnitude: 0,
-                    unit: 'lbs'
-                }
+                weight: 0,
+                unit: 'lbs'
             });
 
             this.emit('change');
         }
     }
 
-    removeSet(workoutId, movement, setIndex) {
-        var exercise = this.getExercise(workoutId, movement);
+    removeSet(workoutId, exerciseIndex, setIndex) {
+        var exercise = this.getExercise(workoutId, exerciseIndex);
         exercise.sets.splice(setIndex, 1);
         this.emit('change');
     }
 
-    updateSet(workoutId, movement, setIndex, set) {
-        var exercise = this.getExercise(workoutId, movement);
+    updateSet(workoutId, exerciseIndex, setIndex, set) {
+        var exercise = this.getExercise(workoutId, exerciseIndex);
         exercise.sets.splice(setIndex, 1, set);
+        this.emit('change');
+    }
+
+    addExercise(workoutId) {
+        var exercise = {
+            movement: this.movements[0],
+            sets: [{
+                reps: 0,
+                weight: 0,
+                unit: 'lbs'
+            }]
+        };
+
+        var workout = this.getWorkout(workoutId);
+        workout.exercises.push(exercise);
         this.emit('change');
     }
 
@@ -201,21 +221,33 @@ class TrainingStore extends EventEmitter {
         this.emit('change');
     }
 
+    updateMovement(workoutId, exerciseIndex, movementId) {
+        var exercise = this.getExercise(workoutId, exerciseIndex);
+        exercise.movement = this.movements.find(a => a.id === movementId);
+    }
+
     handleActions(action) {
         console.log('received action: ', action);
 
         switch(action.type) {
             case 'ADD_SET':
-                this.addSet(action.workoutId, action.movement);
+                this.addSet(action.workoutId, action.exerciseIndex);
                 break;
             case 'REMOVE_SET':
-                this.removeSet(action.workoutId, action.movement, action.setIndex);
+                this.removeSet(action.workoutId, action.exerciseIndex, action.setIndex);
                 break;
             case 'UPDATE_SET':
-                this.updateSet(action.workoutId, action.movement, action.setIndex, action.set);
+                this.updateSet(action.workoutId, action.exerciseIndex, action.setIndex, action.set);
+                break;
+            case 'ADD_EXERCISE':
+                this.addExercise(action.workoutId);
                 break;
             case 'REMOVE_EXERCISE':
                 this.removeExercise(action.workoutId, action.exerciseIndex);
+                break;
+            case 'UPDATE_MOVEMENT':
+                this.updateMovement(action.workoutId, action.exerciseIndex, action.movementId);
+                break;
             default:
                 throw new Error('Unknown action type');
                 break;

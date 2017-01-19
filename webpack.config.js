@@ -3,9 +3,9 @@ var webpack = require('webpack');
 var path = require('path');
 
 module.exports = {
-  context: path.join(__dirname, "src"),
-  devtool: debug ? "inline-sourcemap" : null,
-  entry: "./js/client.js",
+  context: path.join(__dirname, 'src'),
+  devtool: debug ? 'inline-sourcemap' : null,
+  entry: './js/client.js',
   module: {
     loaders: [
       {
@@ -21,16 +21,12 @@ module.exports = {
         test: /\.json$/,
         exclude: /(node_modules|bower_components)/,
         loader: 'json-loader'
-      },
-      {
-        test: /\.scss$/,
-        loader: 'sass-loader'
       }
     ]
   },
   output: {
-    path: __dirname + "/src/",
-    filename: "client.min.js"
+    path: __dirname + '/src/',
+    filename: 'client.min.js'
   },
   plugins: debug ? [] : [
     new webpack.optimize.DedupePlugin(),

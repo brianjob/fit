@@ -1,29 +1,36 @@
 import dispatcher from "../dispatcher";
 
-export function addSet(workoutId, movement) {
+export function addSet(workoutId, exerciseIndex) {
     dispatcher.dispatch({
         type: 'ADD_SET',
         workoutId,
-        movement
+        exerciseIndex
     });
 }
 
-export function removeSet(workoutId, movement, setIndex) {
+export function removeSet(workoutId, exerciseIndex, setIndex) {
     dispatcher.dispatch({
         type: 'REMOVE_SET',
         workoutId,
-        movement,
+        exerciseIndex,
         setIndex
     });
 }
 
-export function updateSet(workoutId, movement, setIndex, set) {
+export function updateSet(workoutId, exerciseIndex, setIndex, set) {
     dispatcher.dispatch({
         type: 'UPDATE_SET',
         workoutId,
-        movement,
+        exerciseIndex,
         setIndex,
         set
+    });
+}
+
+export function addExercise(workoutId) {
+    dispatcher.dispatch({
+        type: 'ADD_EXERCISE',
+        workoutId
     });
 }
 
@@ -32,5 +39,14 @@ export function removeExercise(workoutId, exerciseIndex) {
         type: 'REMOVE_EXERCISE',
         workoutId,
         exerciseIndex
+    });
+}
+
+export function updateMovement(workoutId, exerciseIndex, movementId) {
+    dispatcher.dispatch({
+        type: 'UPDATE_MOVEMENT',
+        workoutId,
+        exerciseIndex,
+        movementId
     });
 }

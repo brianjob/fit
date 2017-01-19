@@ -20,11 +20,11 @@ export default class Training extends React.Component {
     }
 
     componentWillMount() {
-        TrainingStore.on("change", _onChange);
+        TrainingStore.on("change", this._onChange);
     }
 
     componentWillUnmount() {
-        TrainingStore.removeListener("change", _onChange);
+        TrainingStore.removeListener("change", this._onChange);
     }
 
     render() {
@@ -33,7 +33,7 @@ export default class Training extends React.Component {
                 date: x.date,
                 numExercises: x.exercises.length,
                 totalVolume: x.exercises.map(y =>{
-                    return y.sets.map(z => z.weight.magnitude * z.repetitions).reduce((a,b) => a + b)
+                    return y.sets.map(z => z.weight * z.reps).reduce((a,b) => a + b)
                 }).reduce((a,b) => a + b)
             };
         }).map((x, i) => {
