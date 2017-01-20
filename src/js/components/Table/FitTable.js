@@ -11,7 +11,7 @@ export default class FitTable extends React.Component {
 
         return (
             <div>
-            <CreateButton createRoute={this.props.createRoute}/>
+            <CreateButton createNew={this.props.createNew}/>
             <Table>
                 <thead>
                     <tr>
@@ -29,11 +29,9 @@ export default class FitTable extends React.Component {
 
 class CreateButton extends React.Component {
     render() {
-        if (this.props.createRoute) {
+        if (this.props.createNew) {
             return (
-                <LinkContainer to={this.props.createRoute}>
-                    <Button class="pull-right"><span class="glyphicon glyphicon-plus"></span></Button>
-                </LinkContainer>               
+                <Button onClick={this.props.createNew} class="pull-right"><span class="glyphicon glyphicon-plus"></span></Button>
             );
         }
         return (<span></span>)

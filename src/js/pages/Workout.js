@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Row, Col, Button } from "react-bootstrap";
+import { Grid, Row, Col, Button, Alert } from "react-bootstrap";
 import DatePicker from "react-bootstrap-date-picker";
 import * as TrainingActions from "../actions/TrainingActions";
 import TrainingStore from "../stores/TrainingStore";
@@ -10,11 +10,9 @@ export default class Workout extends React.Component {
         super(props);
 
         this._movements = TrainingStore.getMovements().map(x => {return {id: x.id, label: x.name}});
-
-        if (props.params.id) {
-            this.state = {
-                workout: TrainingStore.getWorkout(props.params.id)
-            }
+        
+        this.state = {
+            workout: TrainingStore.getWorkout(props.params.id)
         }
     }
 
@@ -37,22 +35,26 @@ export default class Workout extends React.Component {
     }
 
     render() {
-        const exercises = this.state.workout.exercises.map((x,i) => (
-            <Exercise workoutId={this.props.params.id} exercise={x} exerciseIndex={i} key={i} />
-        ));
+        if (this.state.workout) {
+            const exercises = this.state.workout.exercises.map((x,i) => (
+                <Exercise workoutId={this.props.params.id} exercise={x} exerciseIndex={i} key={i} />
+            ));
         
-        return (
-            <Grid>
-                <Row>
-                <Col lg={3}>
-                <DatePicker placeholder="date" value={this.state.workout.date} />
-                <Button onClick={this.addExercise.bind(this)} style={{marginBottom: "15px", marginTop: "15px"}}>New Exercise</Button>
-                </Col>
-                </Row>
-                <Row>
-                {exercises}
-                </Row>
-            </Grid>
-        );
+            return (
+                <Grid>
+                    <Row>
+                    <Col lg={3}>
+                    <DatePicker placeholder="date" value={this.state.workout.date} />
+                    <Button onClick={this.addExercise.bind(this)} style={{marginBottom: "15px", marginTop: "15px"}}>New Exercise</Button>
+                    </Col>
+                    </Row>
+                    <Row>
+                    {exercises}
+                    </Row>
+                </Grid>
+            );
+        } else {
+            return (<Alert bsStyle="danger">Workout not found</Alert>);
+        }
     }
 }

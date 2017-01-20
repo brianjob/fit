@@ -1,4 +1,5 @@
 import {EventEmitter} from "events";
+import uuid from "uuid";
 import dispatcher from "../dispatcher";
 
 class TrainingStore extends EventEmitter {
@@ -72,6 +73,7 @@ class TrainingStore extends EventEmitter {
             "exercises": [
                 {
                     "movement": {
+                        "id": 0,
                         "name": "low bar back squat"
                     },
                     "rest_minutes": 1.5,
@@ -95,6 +97,7 @@ class TrainingStore extends EventEmitter {
                 },
                 {
                     "movement": {
+                        "id": 3,
                         "name": "overhead press"   
                     },
                     "rest_minutes": 1.5,
@@ -170,21 +173,11 @@ class TrainingStore extends EventEmitter {
         return set;
     }
 
-    createWorkout(workout) {
-        this.workouts.push(workout);
-        this.emit('change');
-    }
-
     addSet(workoutId, exerciseIndex) {
         var exercise = this.getExercise(workoutId, exerciseIndex);
 
         if (exercise) {
-            exercise.sets.push({
-                reps: 0,
-                weight: 0,
-                unit: 'lbs'
-            });
-
+            exercise.sets.push(new ExerciseSet());
             this.emit('change');
         }
     }
@@ -204,11 +197,7 @@ class TrainingStore extends EventEmitter {
     addExercise(workoutId) {
         var exercise = {
             movement: this.movements[0],
-            sets: [{
-                reps: 0,
-                weight: 0,
-                unit: 'lbs'
-            }]
+            sets: [new ExerciseSet()]
         };
 
         var workout = this.getWorkout(workoutId);
@@ -224,6 +213,19 @@ class TrainingStore extends EventEmitter {
     updateMovement(workoutId, exerciseIndex, movementId) {
         var exercise = this.getExercise(workoutId, exerciseIndex);
         exercise.movement = this.movements.find(a => a.id === movementId);
+        this.emit('change');
+    }
+
+    createWorkout() {
+        var workout = new Workout();
+        this.workouts.push(workout);
+        this.emit('change');
+    }
+
+    removeWorkout(workoutId) {
+        var index = this.workouts.findIndex(a => a.workoutId === workoutId);
+        this.workouts.splice(index, 1);
+        this.emit('change');
     }
 
     handleActions(action) {
@@ -248,10 +250,39 @@ class TrainingStore extends EventEmitter {
             case 'UPDATE_MOVEMENT':
                 this.updateMovement(action.workoutId, action.exerciseIndex, action.movementId);
                 break;
+            case 'CREATE_WORKOUT':
+                this.createWorkout();
+                break;
+            case 'REMOVE_WORKOUT':
+                this.removeWorkout(action.workoutId);
+                break;
             default:
                 throw new Error('Unknown action type');
                 break;
         }
+    }
+}
+
+class ExerciseSet {
+    constructor(reps = 0, weight = 0, unit = 'lbs') {
+        this.reps = reps;
+        this.weight = weight;
+        this.unit = unit;
+    }
+}
+
+class Exercise {
+    constructor(movement) {
+        this.movement = movement;
+        this.sets = [new ExerciseSet()];
+    }
+}
+
+class Workout {
+    constructor(id = uuid.v4(), date = new Date()) {
+        this.id = id;
+        this.date = date.toJSON();
+        this.exercises = [];
     }
 }
 

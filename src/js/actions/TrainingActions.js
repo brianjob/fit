@@ -50,3 +50,16 @@ export function updateMovement(workoutId, exerciseIndex, movementId) {
         movementId
     });
 }
+
+export function createWorkout() {
+    dispatcher.dispatch({
+        type: 'CREATE_WORKOUT'
+    });
+}
+
+export function removeWorkout(workoutId) {
+    dispatcher.dispatch({
+        type: 'REMOVE_WORKOUT',
+        workoutId: workoutId
+    });
+}
