@@ -1,4 +1,5 @@
 import dispatcher from "../dispatcher";
+import axios from "axios";
 
 export function addSet(workoutId, exerciseIndex) {
     dispatcher.dispatch({
@@ -42,6 +43,14 @@ export function removeExercise(workoutId, exerciseIndex) {
     });
 }
 
+export function setWorkoutDate(workoutId, date) {
+    dispatcher.dispatch({
+        type: 'SET_WORKOUT_DATE',
+        workoutId,
+        date
+    });
+}
+
 export function updateMovement(workoutId, exerciseIndex, movementId) {
     dispatcher.dispatch({
         type: 'UPDATE_MOVEMENT',
@@ -61,5 +70,36 @@ export function removeWorkout(workoutId) {
     dispatcher.dispatch({
         type: 'REMOVE_WORKOUT',
         workoutId: workoutId
+    });
+}
+
+export function fetchWorkouts() {
+    axios.get('/training/workouts')
+    .then(response => {
+        dispatcher.dispatch({
+            type: 'FETCH_WORKOUTS',
+            workouts: response.data
+        })
+    });
+}
+
+export function fetchMovements() {
+    axios.get('/training/movements')
+    .then(response => {
+        dispatcher.dispatch({
+            type: 'FETCH_MOVEMENTS',
+            movements: response.data
+        });
+    });
+}
+
+export function saveWorkout(workout) {
+    axios.post('/training/workout', {
+        workout
+    }).then(response => {
+        dispatcher.dispatch({
+            type: 'WORKOUT_SAVED',
+            response
+        });
     });
 }

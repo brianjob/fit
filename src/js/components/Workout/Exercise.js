@@ -6,12 +6,6 @@ import { Typeahead } from "react-bootstrap-typeahead";
 import ExerciseSet from "./ExerciseSet";
 
 export default class Exercise extends React.Component {
-    constructor(props) {
-        super();
-
-        this._movements = TrainingStore.getMovements().map(x => { return { label: x.name, id: x.id}});
-    }
-
     addSet() {
         TrainingActions.addSet(
             this.props.workoutId,
@@ -47,9 +41,9 @@ export default class Exercise extends React.Component {
             Add Set
             </Button>);
 
-        const header = (<Typeahead selected={[ this._movements.find(a => a.id === this.props.exercise.movement.id)]} 
+        const header = (<Typeahead selected={[ this.props.movements.find(a => a.id === this.props.exercise.movement)]} 
                                    allowNew={false} 
-                                   options={this._movements} 
+                                   options={this.props.movements} 
                                    onChange={this.updateMovement.bind(this)}/>);
 
         const sets = this.props.exercise.sets.map((x,i) => (<ExerciseSet set={x} 

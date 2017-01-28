@@ -66,7 +66,7 @@ export default class Training extends React.Component {
     render() {
         const rows = this.state.workouts.map(x => {
             return {
-                id: x.id,
+                id: x._id,
                 date: x.date,
                 numExercises: x.exercises.length,
                 totalVolume: x.exercises.map(y => {

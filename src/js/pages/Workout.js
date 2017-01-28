@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Row, Col, Button, Alert } from "react-bootstrap";
+import { Grid, Row, Col, Button, Alert, Fade } from "react-bootstrap";
 import DatePicker from "react-bootstrap-date-picker";
 import * as TrainingActions from "../actions/TrainingActions";
 import TrainingStore from "../stores/TrainingStore";
@@ -9,16 +9,18 @@ export default class Workout extends React.Component {
     constructor(props) {
         super(props);
 
-        this._movements = TrainingStore.getMovements().map(x => {return {id: x.id, label: x.name}});
-        
         this.state = {
-            workout: TrainingStore.getWorkout(props.params.id)
+            workout: TrainingStore.getWorkout(props.params.id),
+            movements: TrainingStore.getMovements().map(x => { return { label: x.name, id: x._id}}),
+            alert: TrainingStore.getAlert()
         }
     }
 
     _onChange = () => {
         this.setState({
-            workout: TrainingStore.getWorkout(this.props.params.id)
+            workout: TrainingStore.getWorkout(this.props.params.id),
+            movements: TrainingStore.getMovements().map(x => { return { label: x.name, id: x._id}}),
+            alert: TrainingStore.getAlert()
         });
     };
 
@@ -31,21 +33,35 @@ export default class Workout extends React.Component {
     }
 
     addExercise() {
-        TrainingActions.addExercise(this.state.workout.id);
+        TrainingActions.addExercise(this.state.workout._id);
+    }
+
+    setDate(value) {
+        TrainingActions.setWorkoutDate(this.state.workout._id, value);
+    }
+
+    saveWorkout() {
+        TrainingActions.saveWorkout(this.state.workout);
     }
 
     render() {
         if (this.state.workout) {
             const exercises = this.state.workout.exercises.map((x,i) => (
-                <Exercise workoutId={this.props.params.id} exercise={x} exerciseIndex={i} key={i} />
+                <Exercise movements={this.state.movements} workoutId={this.props.params.id} exercise={x} exerciseIndex={i} key={i} />
             ));
+
+            const alert = (<Fade in={this.state.alert.show}><Alert bsStyle={this.state.alert.style}>{this.state.alert.text}</Alert></Fade>);
         
             return (
                 <Grid>
                     <Row>
+                    {alert}
+                    </Row>
+                    <Row>
                     <Col lg={3}>
-                    <DatePicker placeholder="date" value={this.state.workout.date} />
+                    <DatePicker onChange={this.setDate.bind(this)} placeholder="date" value={this.state.workout.date} />
                     <Button onClick={this.addExercise.bind(this)} style={{marginBottom: "15px", marginTop: "15px"}}>New Exercise</Button>
+                    <Button onClick={this.saveWorkout.bind(this)} style={{marginBottom: "15px", marginTop: "15px"}} bsStyle="primary" class="pull-right">Save Workout</Button>
                     </Col>
                     </Row>
                     <Row>

@@ -4,8 +4,14 @@
   "description": "",
   "main": "webpack.config.js",
   "dependencies": {
+    "axios": "^0.15.3",
+    "body-parser": "^1.16.0",
+    "express": "^4.14.0",
     "flux": "^3.1.2",
     "history": "^1.17.0",
+    "jsonwebtoken": "^7.2.1",
+    "mongoose": "^4.7.8",
+    "morgan": "^1.7.0",
     "react": "^15.4.2",
     "react-bootstrap": "^0.30.7",
     "react-bootstrap-date-picker": "^4.0.0",
@@ -30,7 +36,7 @@
     "webpack-dev-server": "^1.14.1"
   },
   "scripts": {
-    "dev": "webpack-dev-server --content-base src --inline --hot",
+    "dev": "webpack-dev-server --content-base dist --inline --hot",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Brian Barton",
