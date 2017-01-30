@@ -6,7 +6,36 @@ import { Nav, Navbar, NavItem, NavDropdown, MenuItem } from "react-bootstrap";
 export default class Layout extends React.Component {
     constructor() {
         super();
-        this.state = {title: "Brian"};
+
+        // all routes that shouldn't populate nav bar
+        this.unprotectedRoutes = [
+          '/login',
+          '/register'
+        ];
+    }
+
+    getNavBarItems() {
+        if (~this.unprotectedRoutes.indexOf(this.props.location.pathname)) {
+            return (<div></div>);
+        } else {
+            return (
+            <div>
+            <Nav>
+                <LinkContainer to="training">
+                    <NavItem eventKey={1} href="/training">Training</NavItem>
+                </LinkContainer>
+                <LinkContainer to="nutrition">
+                    <NavItem eventKey={2} href="/nutrition">Nutrition</NavItem>
+                </LinkContainer>
+                <LinkContainer to="supplements">
+                    <NavItem eventKey={2} href="/supplements">Supplements</NavItem>
+                </LinkContainer>
+            </Nav>
+            <Nav pullRight>
+                <NavItem eventKey={2} href="#">Profile</NavItem>
+            </Nav>
+            </div>);
+        }
     }
 
     render() {
@@ -20,20 +49,7 @@ export default class Layout extends React.Component {
                 <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
-                <Nav>
-                    <LinkContainer to="training">
-                        <NavItem eventKey={1} href="/training">Training</NavItem>
-                    </LinkContainer>
-                    <LinkContainer to="nutrition">
-                        <NavItem eventKey={2} href="/nutrition">Nutrition</NavItem>
-                    </LinkContainer>
-                    <LinkContainer to="supplements">
-                        <NavItem eventKey={2} href="/supplements">Supplements</NavItem>
-                    </LinkContainer>
-                </Nav>
-                <Nav pullRight>
-                    <NavItem eventKey={2} href="#">Profile</NavItem>
-                </Nav>
+                {this.getNavBarItems()}
                 </Navbar.Collapse>
             </Navbar>
             <div class="container">

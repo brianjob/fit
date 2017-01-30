@@ -8,6 +8,8 @@ import Nutrition from "./pages/Nutrition";
 import Supplements from "./pages/Supplements";
 import Training from "./pages/Training";
 import Workout from "./pages/Workout";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 
 const app = document.getElementById('app');
 
@@ -15,6 +17,8 @@ ReactDOM.render(
     <Router history={hashHistory}>
         <Route path="/" component={Layout}>
             <IndexRoute component={Dashboard}></IndexRoute>
+            <Route path="login" component={Login}></Route>
+            <Route path="register" component={Register}></Route>
             <Route path="nutrition" component={Nutrition}></Route>
             <Route path="supplements" component={Supplements}></Route>
             <Route path="training" component={Training}></Route>
