@@ -186,9 +186,6 @@ class TrainingStore extends EventEmitter {
             case 'SET_WORKOUT_DATE':
                 this.setWorkoutDate(action.workoutId, action.date);
                 break;
-            default:
-                throw new Error('Unknown action type');
-                break;
         }
     }
 }
